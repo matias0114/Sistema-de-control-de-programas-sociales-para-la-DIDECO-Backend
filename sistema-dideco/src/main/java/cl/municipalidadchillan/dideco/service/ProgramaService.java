@@ -14,7 +14,6 @@ public interface ProgramaService {
     
     void deleteById(int id);
     
-    // Métodos específicos del negocio
     List<Programa> findByEstado(String estado);
     
 }

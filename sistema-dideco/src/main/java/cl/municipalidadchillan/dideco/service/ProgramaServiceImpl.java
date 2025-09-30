@@ -36,7 +36,6 @@ public class ProgramaServiceImpl implements ProgramaService {
 
     @Override
     public List<Programa> findByEstado(String estado) {
-        // Necesitarás agregar este método al repository
         return programaRepository.findByEstado(estado);
     }
 }

@@ -36,7 +36,6 @@ public class PresupuestoServiceImpl implements PresupuestoService {
 
     @Override
     public List<Presupuesto> findByProgramaId(int programaId) {
-        // Necesitarás agregar este método al repository
         return presupuestoRepository.findByProgramaIdPrograma(programaId);
     }
 }

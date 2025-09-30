@@ -43,7 +43,6 @@ public class Presupuesto {
         this.programa = programa;
     }
 
-    // Getters y setters
     public int getIdPresupuesto() {
         return idPresupuesto;
     }

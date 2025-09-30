@@ -40,7 +40,6 @@ public class Avance {
 
     public Avance() {}
 
-    // Constructor con parámetros
     public Avance(Actividad actividad, Usuario usuario, String descripcion, LocalDate fechaAvance, int idAvance, BigDecimal porcentajeAvance) {
         this.actividad = actividad;
         this.usuario = usuario;
@@ -50,7 +49,6 @@ public class Avance {
         this.porcentajeAvance = porcentajeAvance;
     }
 
-    // Getters y setters
     public int getIdAvance() { return idAvance; }
     public void setIdAvance(int idAvance) { this.idAvance = idAvance; }
     public String getDescripcion() { return descripcion; }

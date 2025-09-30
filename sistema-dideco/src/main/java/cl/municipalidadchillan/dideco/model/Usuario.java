@@ -13,18 +13,38 @@ public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idusuario")
+    @Column(name = "id_usuario")
     private int idUsuario;
 
-    // Agrega más campos luego según tu base, para pruebas basta esto.
+    @Column(name = "nombre_usuario", length = 100, nullable = false)
+    private String nombreUsuario;
+
+    @Column(name = "correo", length = 100, nullable = false)
+    private String correo;
+
+    @Column(name = "contraseña", length = 255, nullable = false)
+    private String contrasena;
+
+    @Column(name = "id_rol", nullable = false)
+    private int idRol;
 
     public Usuario() {}
 
-    public int getIdUsuario() {
-        return idUsuario;
+    public Usuario(String nombreUsuario, String correo, String contrasena, int idRol) {
+        this.nombreUsuario = nombreUsuario;
+        this.correo = correo;
+        this.contrasena = contrasena;
+        this.idRol = idRol;
     }
 
-    public void setIdUsuario(int idUsuario) {
-        this.idUsuario = idUsuario;
-    }
+    public int getIdUsuario() { return idUsuario; }
+    public void setIdUsuario(int idUsuario) { this.idUsuario = idUsuario; }
+    public String getNombreUsuario() { return nombreUsuario; }
+    public void setNombreUsuario(String nombreUsuario) { this.nombreUsuario = nombreUsuario; }
+    public String getCorreo() { return correo; }
+    public void setCorreo(String correo) { this.correo = correo; }
+    public String getContrasena() { return contrasena; }
+    public void setContrasena(String contrasena) { this.contrasena = contrasena; }
+    public int getIdRol() { return idRol; }
+    public void setIdRol(int idRol) { this.idRol = idRol; }
 }

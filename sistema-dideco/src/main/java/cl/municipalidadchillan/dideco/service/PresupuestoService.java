@@ -14,7 +14,6 @@ public interface PresupuestoService {
     
     void deleteById(int id);
     
-    // Métodos específicos del negocio
     List<Presupuesto> findByProgramaId(int programaId);
     
 }

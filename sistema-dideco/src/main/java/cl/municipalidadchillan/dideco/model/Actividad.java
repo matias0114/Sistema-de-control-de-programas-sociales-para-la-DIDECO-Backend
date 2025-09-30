@@ -3,6 +3,8 @@ package cl.municipalidadchillan.dideco.model;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -31,12 +33,12 @@ public class Actividad {
     @Column(name = "fecha_termino")
     private LocalDate fechaTermino;
 
-    // La relación con Programa debe estar definida porque idprograma ES obligatorio (clave foránea en tu BDD)
     @ManyToOne
     @JoinColumn(name = "id_programa", nullable = false)
     private Programa programa;
 
     @OneToMany(mappedBy = "actividad")
+    @JsonIgnore
     private List<Avance> avances;
 
     public Actividad() {}
@@ -50,7 +52,6 @@ public class Actividad {
         this.programa = programa;
     }
 
-    // Getters y setters (adaptados)
 
     public int getIdActividad() {
         return idActividad;

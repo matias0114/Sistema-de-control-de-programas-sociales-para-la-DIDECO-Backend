@@ -2,6 +2,8 @@ package cl.municipalidadchillan.dideco.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -26,9 +28,11 @@ public class Programa {
     private String estado = "Activo";
 
     @OneToMany(mappedBy = "programa")
+    @JsonIgnore
     private List<Actividad> actividades;
 
     @OneToMany(mappedBy = "programa")
+    @JsonIgnore
     private List<Presupuesto> presupuestos;
 
     public Programa() {}
@@ -38,7 +42,6 @@ public class Programa {
         this.estado = estado;
     }
 
-    // Getters y setters
     public int getIdPrograma() {
         return idPrograma;
     }
