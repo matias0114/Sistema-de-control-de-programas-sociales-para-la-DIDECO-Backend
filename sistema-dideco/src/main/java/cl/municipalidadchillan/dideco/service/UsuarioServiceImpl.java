@@ -33,4 +33,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     public void deleteById(int id) {
         usuarioRepository.deleteById(id);
     }
+    public Usuario findByCorreo(String correo) {
+        return usuarioRepository.findByCorreo(correo).orElse(null);
+    }
 }

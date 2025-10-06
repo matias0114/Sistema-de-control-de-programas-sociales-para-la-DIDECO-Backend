@@ -59,4 +59,14 @@ public class UsuarioController {
         usuarioService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<Usuario> login(@RequestBody Usuario loginData) {
+        Usuario usuario = usuarioService.findByCorreo(loginData.getCorreo());
+        if (usuario != null && usuario.getContrasena().equals(loginData.getContrasena())) {
+            return ResponseEntity.ok(usuario);
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+}
+
 }

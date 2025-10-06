@@ -9,4 +9,6 @@ public interface UsuarioService {
     Usuario findById(int id);
     Usuario save(Usuario usuario);
     void deleteById(int id);
+
+    public Usuario findByCorreo(String correo);
 }
