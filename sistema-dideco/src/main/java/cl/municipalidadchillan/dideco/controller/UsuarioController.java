@@ -1,6 +1,8 @@
 package cl.municipalidadchillan.dideco.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import cl.municipalidadchillan.dideco.model.Programa;
 import cl.municipalidadchillan.dideco.model.Usuario;
+import cl.municipalidadchillan.dideco.repository.ProgramaRepository;
 import cl.municipalidadchillan.dideco.service.UsuarioService;
 
 @RestController
@@ -23,6 +27,8 @@ public class UsuarioController {
 
     @Autowired
     private UsuarioService usuarioService;
+    @Autowired
+    private ProgramaRepository programaRepository;
 
     @GetMapping
     public List<Usuario> getAll() {
@@ -61,12 +67,26 @@ public class UsuarioController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Usuario> login(@RequestBody Usuario loginData) {
+    public ResponseEntity<?> login(@RequestBody Usuario loginData) {
         Usuario usuario = usuarioService.findByCorreo(loginData.getCorreo());
         if (usuario != null && usuario.getContrasena().equals(loginData.getContrasena())) {
-            return ResponseEntity.ok(usuario);
+            // Buscar el programa asignado (solo 1 por encargado)
+            Programa programa = programaRepository.findByUsuario_IdUsuario(usuario.getIdUsuario());
+            // Prepara la respuesta extensible
+            Map<String, Object> response = new HashMap<>();
+            response.put("idUsuario", usuario.getIdUsuario());
+            response.put("nombreUsuario", usuario.getNombreUsuario());
+            response.put("idRol", usuario.getIdRol());
+            response.put("correo", usuario.getCorreo());
+            if (programa != null) {
+                Map<String, Object> programaInfo = new HashMap<>();
+                programaInfo.put("idPrograma", programa.getIdPrograma());
+                programaInfo.put("nombrePrograma", programa.getNombrePrograma());
+                response.put("programa", programaInfo);
+            }
+            return ResponseEntity.ok(response);
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-}
+    }
 
 }

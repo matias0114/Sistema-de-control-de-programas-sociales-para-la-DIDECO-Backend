@@ -8,4 +8,6 @@ import cl.municipalidadchillan.dideco.model.Programa;
 
 public interface ProgramaRepository extends JpaRepository<Programa, Integer> {
     List<Programa> findByEstado(String estado);
+    Programa findByUsuario_IdUsuario(int idUsuario);
+
 }
