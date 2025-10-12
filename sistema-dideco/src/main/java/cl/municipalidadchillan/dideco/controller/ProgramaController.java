@@ -52,7 +52,6 @@ public ResponseEntity<Programa> update(@PathVariable int id, @RequestBody Progra
         return ResponseEntity.notFound().build();
     }
 
-    // 🔹 Copiamos todos los campos editables del nuevo al existente
     existente.setNombrePrograma(programaActualizado.getNombrePrograma());
     existente.setDescripcion(programaActualizado.getDescripcion());
     existente.setTipoPrograma(programaActualizado.getTipoPrograma());
@@ -66,7 +65,6 @@ public ResponseEntity<Programa> update(@PathVariable int id, @RequestBody Progra
     existente.setBeneficios(programaActualizado.getBeneficios());
     existente.setEstado(programaActualizado.getEstado());
 
-    // 🔹 Guardamos el existente actualizado
     Programa actualizado = programaService.save(existente);
 
     return ResponseEntity.ok(actualizado);
