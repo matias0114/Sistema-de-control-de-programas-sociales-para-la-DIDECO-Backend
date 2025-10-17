@@ -1,10 +1,12 @@
 package cl.municipalidadchillan.dideco.controller;
 
 import java.util.List;
+import java.util.Map; 
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate; 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +25,9 @@ public class ProgramaController {
 
     @Autowired
     private ProgramaService programaService;
+    
+    @Autowired
+    private JdbcTemplate jdbcTemplate; 
 
     @GetMapping
     public List<Programa> getAll() {
@@ -80,5 +85,29 @@ public ResponseEntity<Programa> update(@PathVariable int id, @RequestBody Progra
     @GetMapping("/estado/{estado}")
     public List<Programa> findByEstado(@PathVariable String estado) {
         return programaService.findByEstado(estado);
+    }
+
+    @GetMapping("/{id}/gastos-mensuales")
+    public ResponseEntity<List<Map<String, Object>>> getGastosMensuales(@PathVariable int id) {
+        List<Map<String, Object>> gastos = jdbcTemplate.query(
+            """
+            SELECT 
+              MONTH(fecha_registro) AS mes,
+              YEAR(fecha_registro) AS anio,
+              SUM(monto_ejecutado) AS total_gastado
+            FROM presupuesto
+            WHERE id_programa = ?
+              AND monto_ejecutado IS NOT NULL
+            GROUP BY anio, mes
+            ORDER BY anio, mes;
+            """,
+            (rs, rowNum) -> Map.of(
+                "mes", rs.getInt("mes"),
+                "anio", rs.getInt("anio"),
+                "totalGasto", rs.getDouble("total_gastado")
+            ),
+            id
+        );
+        return ResponseEntity.ok(gastos);
     }
 }
