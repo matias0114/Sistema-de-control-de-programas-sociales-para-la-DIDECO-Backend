@@ -34,7 +34,7 @@ public class Programa {
     @JoinColumn(name = "id_usuario")
     private Usuario usuario;
 
-    @Column(name = "descripcion")
+    @Column(name = "descripcion", columnDefinition = "TEXT")
     private String descripcion;
 
     @Column(name = "tipo_programa", length = 100)
@@ -46,10 +46,10 @@ public class Programa {
     @Column(name = "contacto_encargado", length = 150)
     private String contactoEncargado;
 
-    @Column(name = "requisitos_ingreso")
+    @Column(name = "requisitos_ingreso", columnDefinition = "TEXT")
     private String requisitosIngreso;
 
-    @Column(name = "beneficios")
+    @Column(name = "beneficios", columnDefinition = "TEXT")
     private String beneficios;
 
     @Column(name = "fecha_inicio")
@@ -61,7 +61,7 @@ public class Programa {
     @Column(name = "cupos")
     private Integer cupos;
 
-    @Column(name = "metas", length = 255)
+    @Column(name = "metas", columnDefinition = "TEXT")
     private String metas;
 
     @OneToMany(mappedBy = "programa")
@@ -74,14 +74,12 @@ public class Programa {
 
     public Programa() {}
 
-    // CONSTRUCTOR sin obligar datos extra
     public Programa(String nombrePrograma, String estado) {
         this.nombrePrograma = nombrePrograma;
         this.estado = estado;
     }
 
-    // getters y setters de todos los campos...
-
+    // Getters y setters
     public int getIdPrograma() { return idPrograma; }
     public void setIdPrograma(int idPrograma) { this.idPrograma = idPrograma; }
     public String getNombrePrograma() { return nombrePrograma; }

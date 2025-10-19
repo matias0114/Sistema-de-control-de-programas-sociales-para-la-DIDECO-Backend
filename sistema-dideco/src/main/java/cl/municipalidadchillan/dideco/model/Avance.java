@@ -1,6 +1,5 @@
 package cl.municipalidadchillan.dideco.model;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import jakarta.persistence.Column;
@@ -27,8 +26,11 @@ public class Avance {
     @Column(name = "fecha_avance", nullable = false)
     private LocalDate fechaAvance;
 
-    @Column(name = "porcentaje_avance", nullable = false, precision = 5, scale = 2)
-    private BigDecimal porcentajeAvance;
+    @Column(name = "estado", nullable = false, length = 50)
+    private String estado;
+
+    @Column(name = "objetivos_alcanzados", columnDefinition = "text")
+    private String objetivosAlcanzados;
 
     @ManyToOne
     @JoinColumn(name = "id_usuario", nullable = false)
@@ -40,26 +42,34 @@ public class Avance {
 
     public Avance() {}
 
-    public Avance(Actividad actividad, Usuario usuario, String descripcion, LocalDate fechaAvance, int idAvance, BigDecimal porcentajeAvance) {
+    public Avance(Actividad actividad, Usuario usuario, String descripcion, LocalDate fechaAvance, int idAvance, String estado, String objetivosAlcanzados) {
         this.actividad = actividad;
         this.usuario = usuario;
         this.descripcion = descripcion;
         this.fechaAvance = fechaAvance;
         this.idAvance = idAvance;
-        this.porcentajeAvance = porcentajeAvance;
+        this.estado = estado;
+        this.objetivosAlcanzados = objetivosAlcanzados;
     }
 
     public int getIdAvance() { return idAvance; }
     public void setIdAvance(int idAvance) { this.idAvance = idAvance; }
+
     public String getDescripcion() { return descripcion; }
     public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
+
     public LocalDate getFechaAvance() { return fechaAvance; }
     public void setFechaAvance(LocalDate fechaAvance) { this.fechaAvance = fechaAvance; }
-    public BigDecimal getPorcentajeAvance() { return porcentajeAvance; }
-    public void setPorcentajeAvance(BigDecimal porcentajeAvance) { this.porcentajeAvance = porcentajeAvance; }
+
+    public String getEstado() { return estado; }
+    public void setEstado(String estado) { this.estado = estado; }
+
+    public String getObjetivosAlcanzados() { return objetivosAlcanzados; }
+    public void setObjetivosAlcanzados(String objetivosAlcanzados) { this.objetivosAlcanzados = objetivosAlcanzados; }
+
     public Actividad getActividad() { return actividad; }
     public void setActividad(Actividad actividad) { this.actividad = actividad; }
+
     public Usuario getUsuario() { return usuario; }
     public void setUsuario(Usuario usuario) { this.usuario = usuario; }
-
 }
