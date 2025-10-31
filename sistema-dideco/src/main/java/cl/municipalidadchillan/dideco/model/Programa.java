@@ -72,6 +72,11 @@ public class Programa {
     @JsonIgnore
     private List<Presupuesto> presupuestos;
 
+    @OneToMany(mappedBy = "programa") 
+    @JsonIgnore
+    private List<BeneficiarioPrograma> beneficiarios;
+
+
     public Programa() {}
 
     public Programa(String nombrePrograma, String estado) {
@@ -112,4 +117,11 @@ public class Programa {
     public void setActividades(List<Actividad> actividades) { this.actividades = actividades; }
     public List<Presupuesto> getPresupuestos() { return presupuestos; }
     public void setPresupuestos(List<Presupuesto> presupuestos) { this.presupuestos = presupuestos; }
+    public List<BeneficiarioPrograma> getBeneficiarios() {
+        return beneficiarios;
+    }
+    public void setBeneficiarios(List<BeneficiarioPrograma> beneficiarios) {
+        this.beneficiarios = beneficiarios;
+    }
+
 }
