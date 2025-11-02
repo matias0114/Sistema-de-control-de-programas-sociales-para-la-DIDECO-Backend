@@ -1,6 +1,9 @@
 package cl.municipalidadchillan.dideco.model;
 
 import java.time.LocalDate;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,6 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -39,6 +43,18 @@ public class Avance {
     @ManyToOne
     @JoinColumn(name = "id_actividad", nullable = false)
     private Actividad actividad;
+
+    @OneToMany(mappedBy = "avance")
+    @JsonIgnore
+    private List<DocumentoRespaldo> documentos;
+
+    public List<DocumentoRespaldo> getDocumentos() {
+        return documentos;
+    }
+
+    public void setDocumentos(List<DocumentoRespaldo> documentos) {
+        this.documentos = documentos;
+    }
 
     public Avance() {}
 
