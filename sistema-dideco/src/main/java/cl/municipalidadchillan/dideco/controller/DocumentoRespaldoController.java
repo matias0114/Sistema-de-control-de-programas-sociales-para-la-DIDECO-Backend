@@ -39,19 +39,16 @@ public class DocumentoRespaldoController {
         this.avanceService = avanceService;
     }
 
-    // Listar todos los documentos
     @GetMapping
     public List<DocumentoRespaldo> obtenerTodos() {
         return documentoRespaldoService.obtenerTodos();
     }
 
-    // Listar documentos por id de avance
     @GetMapping("/avance/{idAvance}")
     public List<DocumentoRespaldo> obtenerPorAvance(@PathVariable int idAvance) {
         return documentoRespaldoService.obtenerPorIdAvance(idAvance);
     }
 
-    // Obtener documento por id
     @GetMapping("/{id}")
     public ResponseEntity<DocumentoRespaldo> obtenerPorId(@PathVariable Integer id) {
         DocumentoRespaldo documento = documentoRespaldoService.obtenerPorId(id);
@@ -61,7 +58,6 @@ public class DocumentoRespaldoController {
         return ResponseEntity.ok(documento);
     }
 
-    // Crear nuevo documento (sin archivo - solo metadata)
     @PostMapping
     public ResponseEntity<DocumentoRespaldo> crearDocumento(@RequestBody DocumentoRespaldo documento) {
         DocumentoRespaldo nuevo = documentoRespaldoService.guardar(documento);
@@ -80,8 +76,6 @@ public class DocumentoRespaldoController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Avance no encontrado");
             }
 
-            // Aquí la lógica para guardar archivo en disco o almacenamiento
-            // Luego crear el objeto DocumentoRespaldo y guardarlo en la base
             
             String carpetaUploads = "uploads/"; // ruta relativa o absoluta
             String nombreArchivo = System.currentTimeMillis() + "_" + file.getOriginalFilename();

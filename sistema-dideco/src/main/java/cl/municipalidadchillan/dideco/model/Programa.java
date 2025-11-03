@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -77,6 +78,12 @@ public class Programa {
     private List<BeneficiarioPrograma> beneficiarios;
 
 
+    @OneToMany(mappedBy = "programa", cascade = CascadeType.ALL)
+    @JsonIgnore 
+    private List<ObservacionPrograma> observaciones;
+
+
+
     public Programa() {}
 
     public Programa(String nombrePrograma, String estado) {
@@ -122,6 +129,12 @@ public class Programa {
     }
     public void setBeneficiarios(List<BeneficiarioPrograma> beneficiarios) {
         this.beneficiarios = beneficiarios;
+    }
+    public List<ObservacionPrograma> getObservaciones() {
+        return observaciones;
+    }
+    public void setObservaciones(List<ObservacionPrograma> observaciones) {
+        this.observaciones = observaciones;
     }
 
 }
