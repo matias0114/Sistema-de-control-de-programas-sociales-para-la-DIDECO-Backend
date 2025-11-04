@@ -15,7 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import cl.municipalidadchillan.dideco.model.Actividad;
+import cl.municipalidadchillan.dideco.model.Programa;
 import cl.municipalidadchillan.dideco.service.ActividadService;
+import cl.municipalidadchillan.dideco.service.NotificacionService;
+import cl.municipalidadchillan.dideco.service.ProgramaService;
 import jakarta.validation.Valid;
 
 @RestController
@@ -23,10 +26,14 @@ import jakarta.validation.Valid;
 public class ActividadController {
 
     private final ActividadService actividadService;
+    private final NotificacionService notificacionService;
+    private final ProgramaService programaService;
 
     @Autowired
-    public ActividadController(ActividadService actividadService) {
+    public ActividadController(ActividadService actividadService, NotificacionService notificacionService, ProgramaService programaService) {
         this.actividadService = actividadService;
+        this.notificacionService = notificacionService;
+        this.programaService = programaService;
     }
 
     @GetMapping
@@ -42,6 +49,19 @@ public class ActividadController {
     @PostMapping
     public ResponseEntity<Actividad> crearActividad(@RequestBody @Valid Actividad actividad) {
         Actividad nueva = actividadService.guardar(actividad);
+        
+        // Obtener el programa completo desde la base de datos
+        Programa programa = programaService.findById(nueva.getPrograma().getIdPrograma());
+        
+        String nombrePrograma = (programa != null && programa.getNombrePrograma() != null) 
+            ? programa.getNombrePrograma() 
+            : "Desconocido";
+            
+        String mensaje = String.format("Se ha creado una nueva actividad '%s' en el programa '%s'", 
+            nueva.getNombreActividad(), 
+            nombrePrograma);
+        notificacionService.notificarVisualizadores("NUEVA_ACTIVIDAD", mensaje, nueva.getIdActividad());
+        
         return ResponseEntity.status(HttpStatus.CREATED).body(nueva);
     }
 
@@ -66,10 +86,9 @@ public class ActividadController {
         existente.setMontoAsignado(actividad.getMontoAsignado());
         existente.setResponsable(actividad.getResponsable());
         existente.setMetas(actividad.getMetas());
-        existente.setPrograma(actividad.getPrograma()); // opcional, si lo envías desde frontend
+        existente.setPrograma(actividad.getPrograma());
 
         Actividad actualizado = actividadService.guardar(existente);
         return ResponseEntity.ok(actualizado);
     }
-
 }

@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -48,6 +49,7 @@ public class Actividad {
 
     @ManyToOne
     @JoinColumn(name = "id_programa", nullable = false)
+    @JsonIgnoreProperties({"actividades", "usuario", "avances"})
     private Programa programa;
 
     @OneToMany(mappedBy = "actividad")
