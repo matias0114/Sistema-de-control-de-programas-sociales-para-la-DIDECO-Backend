@@ -69,6 +69,13 @@ public class NotificacionService {
         }
     }
 
+    @Transactional
+    public void eliminar(Integer idNotificacion) {
+        Notificacion notificacion = notificacionRepository.findById(idNotificacion)
+            .orElseThrow(() -> new RuntimeException("Notificación no encontrada"));
+        notificacionRepository.delete(notificacion);
+    }
+
     private NotificacionDTO convertirADTO(Notificacion notificacion) {
         return new NotificacionDTO(
             notificacion.getIdNotificacion(),

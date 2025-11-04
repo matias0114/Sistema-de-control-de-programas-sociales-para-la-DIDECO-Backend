@@ -3,21 +3,17 @@ package cl.municipalidadchillan.dideco.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import cl.municipalidadchillan.dideco.model.Actividad;
 import cl.municipalidadchillan.dideco.model.Programa;
 import cl.municipalidadchillan.dideco.service.ActividadService;
 import cl.municipalidadchillan.dideco.service.NotificacionService;
+import cl.municipalidadchillan.dideco.service.PDFExportService;
 import cl.municipalidadchillan.dideco.service.ProgramaService;
 import jakarta.validation.Valid;
 
@@ -28,12 +24,18 @@ public class ActividadController {
     private final ActividadService actividadService;
     private final NotificacionService notificacionService;
     private final ProgramaService programaService;
+    private final PDFExportService pdfExportService;
 
     @Autowired
-    public ActividadController(ActividadService actividadService, NotificacionService notificacionService, ProgramaService programaService) {
+    public ActividadController(
+            ActividadService actividadService, 
+            NotificacionService notificacionService, 
+            ProgramaService programaService,
+            PDFExportService pdfExportService) {
         this.actividadService = actividadService;
         this.notificacionService = notificacionService;
         this.programaService = programaService;
+        this.pdfExportService = pdfExportService;
     }
 
     @GetMapping
@@ -90,5 +92,49 @@ public class ActividadController {
 
         Actividad actualizado = actividadService.guardar(existente);
         return ResponseEntity.ok(actualizado);
+    }
+
+    @GetMapping("/exportar-pdf")
+    public ResponseEntity<byte[]> exportarPDF(@RequestParam(required = false) Integer idPrograma) {
+        List<Actividad> actividades;
+        String nombreArchivo;
+        
+        if (idPrograma != null) {
+            // Si se proporciona un idPrograma, filtrar las actividades
+            Programa programa = programaService.findById(idPrograma);
+            if (programa == null) {
+                return ResponseEntity.notFound().build();
+            }
+            actividades = actividadService.obtenerPorPrograma(idPrograma);
+            nombreArchivo = "actividades-programa-" + idPrograma + ".pdf";
+        } else {
+            // Si no se proporciona idPrograma, obtener todas las actividades
+            actividades = actividadService.obtenerTodas();
+            nombreArchivo = "actividades.pdf";
+        }
+        
+        byte[] pdf = pdfExportService.generarPDFActividades(actividades);
+        
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData("filename", nombreArchivo);
+        
+        return new ResponseEntity<>(pdf, headers, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/exportar-pdf")
+    public ResponseEntity<byte[]> exportarPDFPorId(@PathVariable Integer id) {
+        Actividad actividad = actividadService.obtenerPorId(id);
+        if (actividad == null) {
+            return ResponseEntity.notFound().build();
+        }
+        
+        byte[] pdf = pdfExportService.generarPDFActividades(List.of(actividad));
+        
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData("filename", "actividad-" + id + ".pdf");
+        
+        return new ResponseEntity<>(pdf, headers, HttpStatus.OK);
     }
 }
