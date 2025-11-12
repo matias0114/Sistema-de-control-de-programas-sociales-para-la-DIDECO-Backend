@@ -51,29 +51,29 @@ public class ProgramaController {
     }
 
     @PutMapping("/{id}")
-public ResponseEntity<Programa> update(@PathVariable int id, @RequestBody Programa programaActualizado) {
-    Programa existente = programaService.findById(id);
-    if (existente == null) {
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<Programa> update(@PathVariable int id, @RequestBody Programa programaActualizado) {
+        Programa existente = programaService.findById(id);
+        if (existente == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        existente.setNombrePrograma(programaActualizado.getNombrePrograma());
+        existente.setDescripcion(programaActualizado.getDescripcion());
+        existente.setTipoPrograma(programaActualizado.getTipoPrograma());
+        existente.setOficinaResponsable(programaActualizado.getOficinaResponsable());
+        existente.setContactoEncargado(programaActualizado.getContactoEncargado());
+        existente.setFechaInicio(programaActualizado.getFechaInicio());
+        existente.setFechaFin(programaActualizado.getFechaFin());
+        existente.setCupos(programaActualizado.getCupos());
+        existente.setMetas(programaActualizado.getMetas());
+        existente.setRequisitosIngreso(programaActualizado.getRequisitosIngreso());
+        existente.setBeneficios(programaActualizado.getBeneficios());
+        existente.setEstado(programaActualizado.getEstado());
+        existente.setUsuario(programaActualizado.getUsuario());
+        Programa actualizado = programaService.save(existente);
+        return ResponseEntity.ok(actualizado);
     }
 
-    existente.setNombrePrograma(programaActualizado.getNombrePrograma());
-    existente.setDescripcion(programaActualizado.getDescripcion());
-    existente.setTipoPrograma(programaActualizado.getTipoPrograma());
-    existente.setOficinaResponsable(programaActualizado.getOficinaResponsable());
-    existente.setContactoEncargado(programaActualizado.getContactoEncargado());
-    existente.setFechaInicio(programaActualizado.getFechaInicio());
-    existente.setFechaFin(programaActualizado.getFechaFin());
-    existente.setCupos(programaActualizado.getCupos());
-    existente.setMetas(programaActualizado.getMetas());
-    existente.setRequisitosIngreso(programaActualizado.getRequisitosIngreso());
-    existente.setBeneficios(programaActualizado.getBeneficios());
-    existente.setEstado(programaActualizado.getEstado());
-
-    Programa actualizado = programaService.save(existente);
-
-    return ResponseEntity.ok(actualizado);
-}
 
 
     @DeleteMapping("/{id}")
