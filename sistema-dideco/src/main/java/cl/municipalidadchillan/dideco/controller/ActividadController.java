@@ -1,8 +1,11 @@
 package cl.municipalidadchillan.dideco.controller;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -25,6 +28,7 @@ public class ActividadController {
     private final NotificacionService notificacionService;
     private final ProgramaService programaService;
     private final PDFExportService pdfExportService;
+    private static final DateTimeFormatter FECHA_ARCHIVO_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
 
     @Autowired
     public ActividadController(
@@ -98,6 +102,8 @@ public class ActividadController {
     public ResponseEntity<byte[]> exportarPDF(@RequestParam(required = false) Integer idPrograma) {
         List<Actividad> actividades;
         String nombreArchivo;
+        String nombrePrograma;
+        String fechaHora = LocalDateTime.now().format(FECHA_ARCHIVO_FORMATTER);
         
         if (idPrograma != null) {
             // Si se proporciona un idPrograma, filtrar las actividades
@@ -106,18 +112,24 @@ public class ActividadController {
                 return ResponseEntity.notFound().build();
             }
             actividades = actividadService.obtenerPorPrograma(idPrograma);
-            nombreArchivo = "actividades-programa-" + idPrograma + ".pdf";
+            nombrePrograma = programa.getNombrePrograma();
+            // Limpiar el nombre del programa para usarlo en el archivo (sin espacios ni caracteres especiales)
+            String nombreProgramaLimpio = nombrePrograma
+                .replaceAll("[^a-zA-Z0-9]", "_")
+                .replaceAll("_+", "_");
+            nombreArchivo = "actividades_" + nombreProgramaLimpio + "_" + fechaHora + ".pdf";
         } else {
             // Si no se proporciona idPrograma, obtener todas las actividades
             actividades = actividadService.obtenerTodas();
-            nombreArchivo = "actividades.pdf";
+            nombrePrograma = "Todos los Programas";
+            nombreArchivo = "actividades_todas_" + fechaHora + ".pdf";
         }
         
-        byte[] pdf = pdfExportService.generarPDFActividades(actividades);
+        byte[] pdf = pdfExportService.generarPDFActividades(actividades, nombrePrograma);
         
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
-        headers.setContentDispositionFormData("filename", nombreArchivo);
+        headers.setContentDisposition(ContentDisposition.attachment().filename(nombreArchivo).build());
         
         return new ResponseEntity<>(pdf, headers, HttpStatus.OK);
     }
@@ -129,11 +141,20 @@ public class ActividadController {
             return ResponseEntity.notFound().build();
         }
         
-        byte[] pdf = pdfExportService.generarPDFActividades(List.of(actividad));
+        String nombrePrograma = actividad.getPrograma().getNombrePrograma();
+        String fechaHora = LocalDateTime.now().format(FECHA_ARCHIVO_FORMATTER);
+        
+        // Limpiar el nombre de la actividad para usarlo en el archivo
+        String nombreActividadLimpio = actividad.getNombreActividad()
+            .replaceAll("[^a-zA-Z0-9]", "_")
+            .replaceAll("_+", "_");
+        
+        byte[] pdf = pdfExportService.generarPDFActividades(List.of(actividad), nombrePrograma);
         
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
-        headers.setContentDispositionFormData("filename", "actividad-" + id + ".pdf");
+        headers.setContentDisposition(ContentDisposition.attachment().filename(
+            "actividad_" + nombreActividadLimpio + "_" + fechaHora + ".pdf").build());
         
         return new ResponseEntity<>(pdf, headers, HttpStatus.OK);
     }

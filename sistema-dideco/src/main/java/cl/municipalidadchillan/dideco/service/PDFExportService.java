@@ -24,10 +24,11 @@ import cl.municipalidadchillan.dideco.model.Actividad;
 public class PDFExportService {
     
     private static final DateTimeFormatter FECHA_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private static final DateTimeFormatter FECHA_HORA_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
     private static final DeviceRgb HEADER_COLOR = new DeviceRgb(63, 169, 219);
     private static final DeviceRgb BACKGROUND_COLOR = new DeviceRgb(240, 240, 240);
 
-    public byte[] generarPDFActividades(List<Actividad> actividades) {
+    public byte[] generarPDFActividades(List<Actividad> actividades, String nombrePrograma) {
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             PdfWriter writer = new PdfWriter(baos);
@@ -44,18 +45,36 @@ public class PDFExportService {
                 .setTextAlignment(TextAlignment.CENTER)
                 .setFontColor(HEADER_COLOR)
                 .setBold()
-                .setMarginBottom(20);
+                .setMarginBottom(10);
             document.add(tituloPrincipal);
 
-            // Subtítulo con el programa si es una sola actividad
-            if (actividades.size() == 1) {
-                Paragraph subtitulo = new Paragraph("Programa: " + actividades.get(0).getPrograma().getNombrePrograma())
-                    .setFontSize(16)
-                    .setTextAlignment(TextAlignment.CENTER)
-                    .setFontColor(ColorConstants.DARK_GRAY)
-                    .setMarginBottom(30);
-                document.add(subtitulo);
-            }
+            // Información del programa
+            Paragraph infoPrograma = new Paragraph("Programa: " + nombrePrograma)
+                .setFontSize(16)
+                .setTextAlignment(TextAlignment.CENTER)
+                .setFontColor(ColorConstants.DARK_GRAY)
+                .setBold()
+                .setMarginBottom(10);
+            document.add(infoPrograma);
+
+            // Fecha y hora de generación en el encabezado
+            LocalDateTime fechaGeneracion = LocalDateTime.now();
+            Paragraph fechaGeneracionHeader = new Paragraph(
+                "Fecha de generación: " + fechaGeneracion.format(FECHA_HORA_FORMATTER))
+                .setFontSize(12)
+                .setTextAlignment(TextAlignment.CENTER)
+                .setFontColor(ColorConstants.GRAY)
+                .setMarginBottom(20);
+            document.add(fechaGeneracionHeader);
+
+            // Información adicional: cantidad de actividades
+            Paragraph cantidadActividades = new Paragraph(
+                "Total de actividades: " + actividades.size())
+                .setFontSize(12)
+                .setTextAlignment(TextAlignment.CENTER)
+                .setFontColor(ColorConstants.DARK_GRAY)
+                .setMarginBottom(20);
+            document.add(cantidadActividades);
 
             // Crear tabla
             Table tabla = new Table(UnitValue.createPercentArray(new float[]{2, 3, 2, 2, 2, 2}))
@@ -100,11 +119,17 @@ public class PDFExportService {
 
             document.add(tabla);
 
-            // Pie de página
-            Paragraph footer = new Paragraph("Generado el " + 
-                LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")))
-                .setTextAlignment(TextAlignment.RIGHT)
-                .setFontSize(10)
+            // Pie de página con información adicional
+            Paragraph separador = new Paragraph("\n")
+                .setMarginTop(20);
+            document.add(separador);
+
+            Paragraph footer = new Paragraph(
+                "Sistema de Control de Programas Sociales - DIDECO\n" +
+                "Municipalidad de Chillán\n" +
+                "Documento generado el " + fechaGeneracion.format(FECHA_HORA_FORMATTER))
+                .setTextAlignment(TextAlignment.CENTER)
+                .setFontSize(9)
                 .setFontColor(ColorConstants.GRAY);
             document.add(footer);
 

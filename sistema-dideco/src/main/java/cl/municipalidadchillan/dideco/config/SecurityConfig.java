@@ -42,7 +42,8 @@ public class SecurityConfig {
             "Access-Control-Allow-Methods",
             "Access-Control-Allow-Headers",
             "Access-Control-Max-Age",
-            "Content-Type"
+            "Content-Type",
+            "Content-Disposition"  // Permite que el frontend lea el nombre del archivo
         ));
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);
