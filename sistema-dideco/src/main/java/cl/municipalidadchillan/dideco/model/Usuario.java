@@ -2,6 +2,8 @@ package cl.municipalidadchillan.dideco.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -31,12 +33,12 @@ public class Usuario {
     @Column(name = "id_rol", nullable = false)
     private int idRol;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "usuario")
     private List<Programa> programas; 
 
     @OneToMany(mappedBy = "usuario")
     private List<Avance> avances;
-
 
     public Usuario() {}
 
@@ -57,4 +59,12 @@ public class Usuario {
     public void setContrasena(String contrasena) { this.contrasena = contrasena; }
     public int getIdRol() { return idRol; }
     public void setIdRol(int idRol) { this.idRol = idRol; }
+    public List<Programa> getProgramas() {
+        return programas;
+    }
+
+    public void setProgramas(List<Programa> programas) {
+        this.programas = programas;
+    }
+
 }
