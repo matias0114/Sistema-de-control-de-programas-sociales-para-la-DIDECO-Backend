@@ -27,6 +27,9 @@ public class Presupuesto {
     @Column(name = "monto_ejecutado", precision = 12, scale = 2)
     private BigDecimal montoEjecutado = BigDecimal.ZERO;
 
+    @Column(name = "fuente_presupuesto", length = 255, nullable = false)
+    private String fuentePresupuesto;
+
     @Column(name = "fecha_registro", nullable = false)
     private LocalDate fechaRegistro;
 
@@ -66,6 +69,15 @@ public class Presupuesto {
     public void setMontoEjecutado(BigDecimal montoEjecutado) {
         this.montoEjecutado = montoEjecutado;
     }
+
+    public String getFuentePresupuesto() {
+        return fuentePresupuesto;
+    }
+
+    public void setFuentePresupuesto(String fuentePresupuesto) {
+        this.fuentePresupuesto = fuentePresupuesto;
+    }
+
 
     public LocalDate getFechaRegistro() {
         return fechaRegistro;
